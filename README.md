@@ -1,3 +1,5 @@
+每个章节的内容都会更新到个人主页：https://chuzcjoe.github.io/
+
 项目目录
 
 - OpenGLES + Camera (1): Camera Basic: Start Camera Preview with SurfaceView
