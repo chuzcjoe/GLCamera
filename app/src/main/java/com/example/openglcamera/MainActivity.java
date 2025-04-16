@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void openCamera() {
-        mCamera2Controller.openCamera();
+        if (mSurfaceView == null) {
+            mSurfaceView.post(() -> {
+                openCamera();
+            });
+        }
     }
     
     private void closeCamera() {
@@ -72,14 +76,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
 
         Log.d(TAG, "Opening camera with permission granted");
-        mSurfaceView.post(() -> {
-            openCamera();
-        });
+        openCamera();
     }
     
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        Log.d(TAG, "joechu, surfaceChanged: " + width + ", " + height);
+        Log.d(TAG, "surfaceChanged: " + width + ", " + height);
     }
     
     @Override
@@ -90,15 +92,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void requestPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-            return;
         }
         // add more permission checks
-
-        if (mSurfaceView != null) {
-            mSurfaceView.post(() -> {
-                openCamera();
-            });
-        }
     }
 
     @Override
@@ -106,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestPermission();
+                openCamera();
             }
         }
     }
